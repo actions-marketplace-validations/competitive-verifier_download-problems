@@ -70,7 +70,7 @@ runs:
       run: pip install git+https://github.com/competitive-verifier/competitive-verifier.git@main
 
     - name: Download verify files json
-      if: inputs.verify-files-json == ""
+      if: inputs.verify-files-json == ''
       uses: actions/download-artifact@v3
       with:
         name: ${{ inputs.artifact-name }}
@@ -79,8 +79,8 @@ runs:
       shell: bash
       run: |
         JSON_PATH="${{ inputs.verify-files-json }}"
-        ${JSON_PATH:=$ARTIFACT_JSON_PATH}
-        echo "COMPETITIVE_VERIFY_FILES_PATH=$JSON_PATH" > $GITHUB_ENV
+        echo ${JSON_PATH:=$ARTIFACT_JSON_PATH}
+        echo "COMPETITIVE_VERIFY_FILES_PATH=$JSON_PATH" >> $GITHUB_ENV
       env:
         ARTIFACT_JSON_PATH: ${{ runner.temp }}/verify/${{ inputs.filename }}
 
@@ -89,8 +89,12 @@ runs:
       shell: bash
       run: |
         problems=$(jq -r '.files|to_entries|map(.value.verification.problem|select(. != null)) | sort | unique[]' "$COMPETITIVE_VERIFY_FILES_PATH")
-        md5=$(echo $problems | md5sum | cut -c 1-32)
-        echo $problems
-        echo $md5
-        echo "problems=$problems" >> $GITHUB_OUTPUT
+        md5=$(echo "$problems" | md5sum | cut -c 1-32)
+        echo "$problems"
+        echo "$md5"
+
+        echo "problems<<$md5" >> $GITHUB_OUTPUT
+        echo "$problems" >> $GITHUB_OUTPUT
+        echo "$md5" >> $GITHUB_OUTPUT
+
         echo "md5=$md5" >> $GITHUB_OUTPUT

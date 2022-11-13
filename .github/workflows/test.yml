@@ -42,6 +42,7 @@ jobs:
         uses: ./
         with:
           artifact-name: json2
+          filename: verify_files2.json
 
       - name: Test artifact
         run: |
