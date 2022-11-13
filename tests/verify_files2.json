@@ -1,16 +1,11 @@
 {
     "$schema": "https://raw.githubusercontent.com/competitive-verifier/competitive-verifier/main/schema/verify_files.schema.json",
     "files": {
-        "examples/awk/aplusb2.awk": {
-            "document_attributes": {
-                "document_title": "const \"A + B\""
-            },
-            "dependencies": [],
+        "examples/hello.sh": {
             "verification": {
                 "type": "problem",
-                "compile": "ls .",
-                "command": "awk -f examples/awk/aplusb2.awk",
-                "problem": "https://yukicoder.me/problems/no/3040"
+                "command": "bash examples/hello.sh",
+                "problem": "https://onlinejudge.u-aizu.ac.jp/courses/lesson/2/ITP1/1/ITP1_1_A"
             }
         }
     }

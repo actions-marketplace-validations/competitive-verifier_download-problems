@@ -27,8 +27,8 @@ jobs:
         run: |
           [ "${{ steps.use-local.outputs.problems }}"  = "http://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=ITP1_4_B
           https://judge.yosupo.jp/problem/aplusb
-          https://yukicoder.me/problems/no/3040" ]
-          [ "${{ steps.use-local.outputs.problems-hash }}"  = "5b89dbfcb04a264785bf26ac8999a860" ]
+          https://onlinejudge.u-aizu.ac.jp/courses/lesson/2/ITP1/1/ITP1_1_A" ]
+          [ "${{ steps.use-local.outputs.problems-hash }}"  = "d54c5839ae3a5164f4b20c28a39a90cf" ]
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3
@@ -46,5 +46,5 @@ jobs:
 
       - name: Test artifact
         run: |
-          [ "${{ steps.use-artifact.outputs.problems }}"  = "https://yukicoder.me/problems/no/3040" ]
-          [ "${{ steps.use-artifact.outputs.problems-hash }}"  = "d0bc4d8f2815bd4098825078e0b4292a" ]
+          [ "${{ steps.use-artifact.outputs.problems }}"  = "https://onlinejudge.u-aizu.ac.jp/courses/lesson/2/ITP1/1/ITP1_1_A" ]
+          [ "${{ steps.use-artifact.outputs.problems-hash }}"  = "1fe359fd6574ab4a8b8ad5a6bb27d373" ]
