@@ -1,0 +1,96 @@
+name: "competitive-verifier download"
+description: "A composite action that competitive-verifier download and cache the result"
+author: "Kzrnm"
+branding:
+  color: blue
+  icon: download
+inputs:
+  verify-files-json:
+    description: "The file name of verify files json"
+    default: ""
+    required: false
+  filename:
+    description: "The file name of verify files json in artifact."
+    required: false
+    default: "verify-files.json"
+  artifact-name:
+    description: The name of artifact which contains verify files json.
+    required: false
+    default: ${{ runner.os }}-verify-files-json
+  install:
+    description: "If true, run `pip install competitive-verifier`"
+    required: false
+    default: "false"
+  cache-pip:
+    description: "If true, cache pip"
+    required: false
+    default: "false"
+outputs:
+  problems:
+    description: "Problem urls"
+    value: ${{ steps.list-problems.outputs.problems }}
+  problems-hash:
+    description: "MD5 hash of problem urls"
+    value: ${{ steps.list-problems.outputs.md5 }}
+
+runs:
+  using: composite
+  steps:
+    - name: Set up Python
+      if: fromJson(inputs.install)
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.9"
+
+    - uses: actions/cache@v3
+      if: startsWith(runner.os, 'Linux') && fromJson(inputs.cache-pip)
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-competitive-verifier-${{ github.sha }}
+        restore-keys: |
+          ${{ runner.os }}-pip-competitive-verifier-
+    - uses: actions/cache@v3
+      if: startsWith(runner.os, 'macOS') && fromJson(inputs.cache-pip)
+      with:
+        path: ~/Library/Caches/pip
+        key: ${{ runner.os }}-pip-competitive-verifier-${{ github.sha }}
+        restore-keys: |
+          ${{ runner.os }}-pip-competitive-verifier-
+    - uses: actions/cache@v3
+      if: startsWith(runner.os, 'Windows') && fromJson(inputs.cache-pip)
+      with:
+        path: ~\AppData\Local\pip\Cache
+        key: ${{ runner.os }}-pip-competitive-verifier-${{ github.sha }}
+        restore-keys: |
+          ${{ runner.os }}-pip-competitive-verifier-
+
+    - name: Install competitive-verifier
+      shell: bash
+      if: fromJson(inputs.install)
+      run: pip install git+https://github.com/competitive-verifier/competitive-verifier.git@main
+
+    - name: Download verify files json
+      if: ! inputs.verify-files-json
+      uses: actions/download-artifact@v3
+      with:
+        name: ${{ artifact-name }}
+        path: ${{ runner.temp }}/verify
+    - name: Set $COMPETITIVE_VERIFY_FILES_PATH
+      shell: bash
+      run: |
+        JSON_PATH="${{ inputs.verify-files-json }}"
+        ${JSON_PATH:=$ARTIFACT_JSON_PATH}
+        echo "COMPETITIVE_VERIFY_FILES_PATH=$JSON_PATH" > $GITHUB_ENV
+      env:
+        ARTIFACT_JSON_PATH: ${{ runner.temp }}/verify/${{ inputs.filename }}
+
+    - name: List problems
+      id: list-problems
+      shell: bash
+      run: |
+        problems=$(jq -r '.files|to_entries|map(.value.verification.problem|select(. != null)) | sort | unique[]' "$COMPETITIVE_VERIFY_FILES_PATH")
+        md5=$(echo $problems | md5sum | cut -c 1-32)
+        echo $problems
+        echo $md5
+        echo "problems=$problems" >> $GITHUB_OUTPUT
+        echo "md5=$md5" >> $GITHUB_OUTPUT

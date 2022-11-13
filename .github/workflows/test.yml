@@ -1,0 +1,49 @@
+name: Test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Download local problems
+        id: use-local
+        uses: ./
+        with:
+          verify-files-json: tests/verify_files.json
+          install: true
+          cache-pip: true
+
+      - name: Test local
+        run: |
+          [ "${{ steps.use-local.outputs.problems }}"  = "http://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=ITP1_4_B
+          https://judge.yosupo.jp/problem/aplusb
+          https://yukicoder.me/problems/no/3040" ]
+          [ "${{ steps.use-local.outputs.problems-hash }}"  = "5b89dbfcb04a264785bf26ac8999a860" ]
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: json2
+          path: tests/verify_files2.json
+          retention-days: 1
+
+      - name: Download artifact problems
+        id: use-artifact
+        uses: ./
+        with:
+          artifact-name: json2
+
+      - name: Test artifact
+        run: |
+          [ "${{ steps.use-artifact.outputs.problems }}"  = "https://yukicoder.me/problems/no/3040" ]
+          [ "${{ steps.use-artifact.outputs.problems-hash }}"  = "d0bc4d8f2815bd4098825078e0b4292a" ]

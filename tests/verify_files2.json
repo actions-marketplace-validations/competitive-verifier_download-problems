@@ -1,0 +1,17 @@
+{
+    "$schema": "https://raw.githubusercontent.com/competitive-verifier/competitive-verifier/main/schema/verify_files.schema.json",
+    "files": {
+        "examples/awk/aplusb2.awk": {
+            "document_attributes": {
+                "document_title": "const \"A + B\""
+            },
+            "dependencies": [],
+            "verification": {
+                "type": "problem",
+                "compile": "ls .",
+                "command": "awk -f examples/awk/aplusb2.awk",
+                "problem": "https://yukicoder.me/problems/no/3040"
+            }
+        }
+    }
+}
