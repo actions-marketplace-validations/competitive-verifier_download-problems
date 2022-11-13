@@ -98,3 +98,15 @@ runs:
         echo "$md5" >> $GITHUB_OUTPUT
 
         echo "md5=$md5" >> $GITHUB_OUTPUT
+
+    - name: Cache problems
+      uses: actions/cache@v3
+      with:
+        path: .competitive-verifier/cache
+        key: verifier-${{ runner.os }}-${{ steps.list-problems.outputs.md5 }}
+        restore-keys: |
+          verifier-${{ runner.os }}
+
+    - name: Run download
+      shell: bash
+      run: competitive-verifier download
