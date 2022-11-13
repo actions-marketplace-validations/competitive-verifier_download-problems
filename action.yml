@@ -9,15 +9,15 @@ inputs:
     description: "If true, this action cache problems."
     required: false
     default: "false"
-  verify-files-json:
-    description: "The file name of verify files json."
+  local-verify-files-path:
+    description: "The file path of verify files json."
     required: false
     default: ""
-  filename:
+  verify-files-name:
     description: "The file name of verify files json in artifact."
     required: false
     default: "verify-files.json"
-  artifact-name:
+  verify-files-artifact-name:
     description: The name of artifact which contains verify files json.
     required: false
     default: ${{ runner.os }}-verify-files-json
@@ -74,19 +74,19 @@ runs:
       run: pip install git+https://github.com/competitive-verifier/competitive-verifier.git@main
 
     - name: Download verify files json
-      if: inputs.verify-files-json == ''
+      if: inputs.local-verify-files-path == ''
       uses: actions/download-artifact@v3
       with:
-        name: ${{ inputs.artifact-name }}
+        name: ${{ inputs.verify-files-artifact-name }}
         path: ${{ runner.temp }}/verify
     - name: Set $COMPETITIVE_VERIFY_FILES_PATH
       shell: bash
       run: |
-        JSON_PATH="${{ inputs.verify-files-json }}"
+        JSON_PATH="${{ inputs.local-verify-files-path }}"
         echo ${JSON_PATH:=$ARTIFACT_JSON_PATH}
         echo "COMPETITIVE_VERIFY_FILES_PATH=$JSON_PATH" >> $GITHUB_ENV
       env:
-        ARTIFACT_JSON_PATH: ${{ runner.temp }}/verify/${{ inputs.filename }}
+        ARTIFACT_JSON_PATH: ${{ runner.temp }}/verify/${{ inputs.verify-files-name }}
 
     - name: List problems
       id: list-problems
