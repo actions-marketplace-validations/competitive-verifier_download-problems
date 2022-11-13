@@ -1,14 +1,18 @@
 name: "competitive-verifier download"
-description: "A composite action that competitive-verifier download and cache the result"
+description: "A composite action that competitive-verifier download"
 author: "Kzrnm"
 branding:
   color: blue
   icon: download
 inputs:
-  verify-files-json:
-    description: "The file name of verify files json"
-    default: ""
+  cache:
+    description: "If true, this action cache problems."
     required: false
+    default: "false"
+  verify-files-json:
+    description: "The file name of verify files json."
+    required: false
+    default: ""
   filename:
     description: "The file name of verify files json in artifact."
     required: false
@@ -100,6 +104,7 @@ runs:
         echo "md5=$md5" >> $GITHUB_OUTPUT
 
     - name: Cache problems
+      if: fromJson(inputs.cache)
       uses: actions/cache@v3
       with:
         path: .competitive-verifier/cache

@@ -22,6 +22,7 @@ jobs:
           verify-files-json: tests/verify_files.json
           install: true
           cache-pip: true
+          cache: true
 
       - name: Test local
         run: |
