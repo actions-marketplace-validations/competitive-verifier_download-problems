@@ -19,7 +19,7 @@ jobs:
         id: use-local
         uses: ./
         with:
-          verify-files-json: tests/verify_files.json
+          local-verify-files-path: tests/verify_files.json
           install: true
           cache-pip: true
           cache: true
@@ -42,7 +42,7 @@ jobs:
         id: use-artifact
         uses: ./
         with:
-          artifact-name: json2
+          verify-files-artifact-name: json2
           verify-files-name: verify_files2.json
 
       - name: Test artifact
