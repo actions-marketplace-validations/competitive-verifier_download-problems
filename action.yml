@@ -108,9 +108,10 @@ runs:
       uses: actions/cache@v3
       with:
         path: .competitive-verifier/cache
-        key: verifier-${{ runner.os }}-${{ steps.list-problems.outputs.md5 }}
+        key: competitive-verifier-problem-${{ runner.os }}-${{ steps.list-problems.outputs.md5 }}
         restore-keys: |
-          verifier-${{ runner.os }}
+          competitive-verifier-problem-${{ runner.os }}
+          competitive-verifier-problem
 
     - name: Run download
       shell: bash
