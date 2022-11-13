@@ -73,7 +73,7 @@ runs:
       if: inputs.verify-files-json == ""
       uses: actions/download-artifact@v3
       with:
-        name: ${{ artifact-name }}
+        name: ${{ inputs.artifact-name }}
         path: ${{ runner.temp }}/verify
     - name: Set $COMPETITIVE_VERIFY_FILES_PATH
       shell: bash
