@@ -70,7 +70,7 @@ runs:
       run: pip install git+https://github.com/competitive-verifier/competitive-verifier.git@main
 
     - name: Download verify files json
-      if: ! inputs.verify-files-json
+      if: inputs.verify-files-json == ""
       uses: actions/download-artifact@v3
       with:
         name: ${{ artifact-name }}
